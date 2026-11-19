@@ -27,7 +27,7 @@ import urllib.request
 from pathlib import Path
 
 BRIDGE_REPO = "paq85/github-copilot-openai-bridge"
-BRIDGE_VERSION = "1.0.0"  # a release tag (v1.0.0) of BRIDGE_REPO; bump together with plugin.yaml
+BRIDGE_VERSION = "1.0.1"  # a release tag (v1.0.1) of BRIDGE_REPO; bump together with plugin.yaml
 BRIDGE_FILES = ("server.mjs", "package.json", "package-lock.json")
 DEFAULT_PORT = 8788  # not the bridge's own 8787, so a bridge started by hand is never mistaken for ours
 

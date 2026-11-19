@@ -43,12 +43,12 @@ model:
 
 ## How it works
 
-- **Download and install.** This plugin version pins bridge release **v1.0.0**
+- **Download and install.** This plugin version pins bridge release **v1.0.1**
   (`BRIDGE_VERSION` in `bridge_process.py`). As soon as Hermes loads the plugin (right after
   `plugins install --enable`, the running gateway reloads it), the plugin downloads that release
   from GitHub, runs `npm ci` and keeps it in a per-user directory:
-  `%LOCALAPPDATA%\hermes-plugin-github-copilot\bridge\v1.0.0` on Windows,
-  `~/.cache/hermes-plugin-github-copilot/bridge/v1.0.0` elsewhere. It is shared by every Hermes
+  `%LOCALAPPDATA%\hermes-plugin-github-copilot\bridge\v1.0.1` on Windows,
+  `~/.cache/hermes-plugin-github-copilot/bridge/v1.0.1` elsewhere. It is shared by every Hermes
   profile and process; when a plugin update pins a newer bridge, the old version is removed once
   nothing runs from it. If that first install hasn't finished (or failed), the first message does it.
 - **Start on demand.** When you use the provider, the plugin starts the bridge on `127.0.0.1:8788`
