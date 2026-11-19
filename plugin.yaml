@@ -1,5 +1,5 @@
 name: copilot-bridge
 kind: model-provider
-version: 1.0.4
+version: 1.0.5
 description: GitHub Copilot as a Hermes provider via the GitHub Copilot OpenAI bridge, downloaded and run by the plugin (needs Node.js 20.19+ and a signed-in Copilot CLI)
 author: paq85

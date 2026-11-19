@@ -141,6 +141,26 @@ class Process(Isolated):
         with self.assertRaises(RuntimeError):
             bp.ensure_running(wait=1)
 
+    def test_installed_bridge_start_prunes_old_versions(self):
+        # An older bridge still running during the update keeps its directory then; the next start
+        # of the installed version removes it (no download or npm needed).
+        os.environ.pop("COPILOT_BRIDGE_SOURCE", None)
+        bp = load("bp_prune")
+        base = self.tmp / "runtime"
+        target = base / f"v{bp.BRIDGE_VERSION}"
+        (target / "node_modules" / "@github" / "copilot-sdk").mkdir(parents=True)
+        (target / "server.mjs").write_text("")
+        (target / "node_modules" / "@github" / "copilot-sdk" / "package.json").write_text("{}")
+        (base / "v0.0.1").mkdir()
+        (base / "v0.0.1" / "server.mjs").write_text("")
+        stale = base / ".staging-old-v0.0.0-1"
+        stale.mkdir()
+        os.utime(stale, (time.time() - 7200, time.time() - 7200))
+        fresh = base / ".staging-abc"  # another process's install in progress
+        fresh.mkdir()
+        self.assertEqual(bp.runtime_dir(), target)
+        self.assertEqual(sorted(p.name for p in base.iterdir()), sorted([target.name, fresh.name]))
+
     def test_pinned_release_url(self):
         bp = load("bp_url")
         self.assertEqual(bp.bridge_url(),

@@ -217,9 +217,13 @@ def runtime_dir() -> Path:
     base = _runtime_base()
     target = base / _runtime_key()
     if _has_deps(target):
+        # Also prune here, not only after an install: an older bridge that was still running when
+        # this version got installed couldn't be removed then, and this runs on every bridge start.
+        _prune_runtimes(base, keep=target)
         return target
     with _install_lock:
         if _has_deps(target):
+            _prune_runtimes(base, keep=target)
             return target
         npm = _which("npm")
         if not npm:
@@ -263,8 +267,10 @@ def _prune_runtimes(base: Path, keep: Path) -> None:
     """Best-effort removal of other bridge versions.
 
     Each is renamed away before deletion: on Windows that rename fails while a bridge still runs
-    from it, so a live runtime is never half-deleted under its running bridge.
+    from it, so a live runtime is never half-deleted under its running bridge; such a version is
+    retried on a later call. Old staging and trash directories are cleared here too.
     """
+    _remove_stale_staging(base)
     for d in base.iterdir():
         if d == keep or not d.is_dir() or d.name.startswith(".staging-"):
             continue
