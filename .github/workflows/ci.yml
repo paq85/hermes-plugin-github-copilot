@@ -1,0 +1,21 @@
+name: CI
+on:
+  push:
+  pull_request:
+jobs:
+  check:
+    # Tests that start the bridge need a signed-in Copilot account, so CI runs the rest.
+    runs-on: ubuntu-latest
+    env:
+      CI: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m py_compile __init__.py bridge_process.py skills/copilot-bridge-uninstall/scripts/uninstall_copilot_bridge.py
+      - run: python -m unittest test_plugin -v
+      - name: Pinned bridge release exists
+        run: |
+          url=$(python -c "import importlib.util as u; s=u.spec_from_file_location('b','bridge_process.py'); m=u.module_from_spec(s); s.loader.exec_module(m); print(m.bridge_url())")
+          curl -fsSIL "$url" > /dev/null && echo "ok: $url"
